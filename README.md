@@ -4,6 +4,9 @@ A set of functions and classes to help with AML SDK
 
 # Installation
 
-pip install 
+```bash
+pip install git+https://github.com/msalvaris/amltoolz.git
+```
+
 
 # Usage
