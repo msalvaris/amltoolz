@@ -1,10 +1,15 @@
 import pandas as pd
+from amltoolz.collection import Collection
 
+
+# get_details_with_logs()
+# log_files = details["logFiles"]
 
 class Run(object):
     def __init__(self, id, aml_run):
         self._id = id
         self.aml_run = aml_run
+        self.logs = Collection(lambda: self.aml_run.get_details_with_logs().get("logFiles"))
 
     def __repr__(self):
         details_dict = self.details()
