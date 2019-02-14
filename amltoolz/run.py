@@ -2,14 +2,20 @@ import pandas as pd
 from amltoolz.collection import Collection
 
 
-# get_details_with_logs()
-# log_files = details["logFiles"]
+def _translate_log_name(log_name):
+    return log_name.split('/')[-1].strip('.txt')
+
+
+def _get_logs(aml_run):
+    log_dict = aml_run.get_details_with_logs().get("logFiles")
+    return {_get_logs(k) for k, v in log_dict.items()}
+
 
 class Run(object):
     def __init__(self, id, aml_run):
         self._id = id
         self.aml_run = aml_run
-        self.logs = Collection(lambda: self.aml_run.get_details_with_logs().get("logFiles"))
+        self.logs = Collection(lambda: _get_logs(self.aml_run))
 
     def __repr__(self):
         details_dict = self.details()
