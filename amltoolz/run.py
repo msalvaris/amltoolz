@@ -8,7 +8,7 @@ def _translate_log_name(log_name):
 
 def _get_logs(aml_run):
     log_dict = aml_run.get_details_with_logs().get("logFiles")
-    return {_get_logs(k) for k, v in log_dict.items()}
+    return {_translate_log_name(k) for k, v in log_dict.items()}
 
 
 class Run(object):
