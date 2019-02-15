@@ -1,5 +1,6 @@
 import logging
 import os
+from itertools import product, chain
 from pathlib import Path
 
 import azureml
@@ -172,6 +173,47 @@ def _experiment_df_from(experiment):
     )[list(_EXPERIMENT_COLUMNS)]
 
 
+def _extract(ct_dict, nodes_iter):
+    key = next(nodes_iter)
+    value = ct_dict[key]
+    if isinstance(value, dict):
+        yield from _extract(value, nodes_iter)
+    else:
+        yield key, value
+        yield from _extract(ct_dict, nodes_iter)
+
+
+def _compute_target_df_from(compute_target):
+    ct_dict = compute_target.serialize()
+
+    # Traverses the nested structure extracting the leaves at a level before moving on to a branch.
+    # The properties extracted are
+    # name
+    # location
+    # properties                            computeType, provisioningState
+    # properties properties                 vmSize, vmPriority
+    # properties properties scaleSettings   minNodeCount, maxNodeCount, nodeIdleTimeBeforeScaleDown
+
+    nodes_iter = (
+        "name",
+        "location",
+        "properties",
+        "computeType",
+        "provisioningState",
+        "properties",
+        "vmSize",
+        "vmPriority",
+        "scaleSettings",
+        "minNodeCount",
+        "maxNodeCount",
+        "nodeIdleTimeBeforeScaleDown",
+    )
+
+    return pipe(_extract(ct_dict, iter(nodes_iter)),
+                dict,
+                pd.DataFrame)
+
+
 class Workspace(object):
     def __init__(
         self,
@@ -199,8 +241,14 @@ class Workspace(object):
         df_list = list(map(_experiment_df_from, exp_iter))
         return pd.concat(df_list)
 
+    def compute_targets_to_df(self):
+        ct_iter = map(lambda x: getattr(x, "aml_compute_target"), self.compute_targets)
+        df_list = list(map(_compute_target_df_from, ct_iter))
+        return pd.concat(df_list)
+
 
 if __name__ == "__main__":
     logging.config.fileConfig(os.getenv("LOG_CONFIG", "logging.conf"))
     import fire
+
     fire.Fire({"create": create_workspace})
