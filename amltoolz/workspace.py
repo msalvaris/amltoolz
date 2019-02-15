@@ -23,7 +23,7 @@ from amltoolz.defaults import (
     REGION,
 )
 from amltoolz.experiment import Experiment, runs_to_df
-import panas as pd
+import pandas as pd
 
 
 def _workspace_for(
