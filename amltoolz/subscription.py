@@ -1,4 +1,5 @@
 import logging
+import os
 import subprocess
 import sys
 
@@ -41,6 +42,7 @@ def select(sub_name_or_id):
 
 
 if __name__ == "__main__":
+    logging.config.fileConfig(os.getenv("LOG_CONFIG", "logging.conf"))
     import fire
 
     fire.Fire({"list": list_subscriptions, "select": select})

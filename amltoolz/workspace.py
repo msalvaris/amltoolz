@@ -201,6 +201,6 @@ class Workspace(object):
 
 
 if __name__ == "__main__":
+    logging.config.fileConfig(os.getenv("LOG_CONFIG", "logging.conf"))
     import fire
-
     fire.Fire({"create": create_workspace})
