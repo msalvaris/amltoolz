@@ -211,7 +211,7 @@ def _compute_target_df_from(compute_target):
 
     return pipe(_extract(ct_dict, iter(nodes_iter)),
                 dict,
-                pd.DataFrame)
+                pd.Series)
 
 
 class Workspace(object):
