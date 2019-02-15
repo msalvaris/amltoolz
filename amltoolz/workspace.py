@@ -1,9 +1,9 @@
 import logging
 import os
-from itertools import product, chain
 from pathlib import Path
 
 import azureml
+import pandas as pd
 from azureml.core.authentication import AuthenticationException
 from azureml.core.authentication import (
     AzureCliAuthentication,
@@ -24,7 +24,6 @@ from amltoolz.defaults import (
     REGION,
 )
 from amltoolz.experiment import Experiment, runs_to_df
-import pandas as pd
 
 
 def _workspace_for(
