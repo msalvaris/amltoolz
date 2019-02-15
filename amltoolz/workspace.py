@@ -22,7 +22,8 @@ from amltoolz.defaults import (
     SUBSCRIPTION_ID,
     REGION,
 )
-from amltoolz.experiment import Experiment
+from amltoolz.experiment import Experiment, runs_to_df
+import panas as pd
 
 
 def _workspace_for(
@@ -155,6 +156,22 @@ def workspace_for_user(
         )
 
 
+_EXPERIMENT_COLUMNS = (
+    "workspace",
+    "experiment",
+    "runId",
+    "status",
+    "startTimeUtc",
+    "endTimeUtc",
+)
+
+
+def _experiment_df_from(experiment):
+    return runs_to_df(experiment).assign(
+        experiment=experiment.name, workspace=experiment.workspace.name
+    )[list(_EXPERIMENT_COLUMNS)]
+
+
 class Workspace(object):
     def __init__(
         self,
@@ -176,6 +193,11 @@ class Workspace(object):
         self.compute_targets = Collection(
             lambda: _get_compute_targets(self.aml_workspace)
         )
+
+    def experiments_to_df(self):
+        exp_iter = map(lambda x: getattr(x, "aml_experiment"), self.experiments)
+        df_list = list(map(_experiment_df_from, exp_iter))
+        return pd.concat(df_list)
 
 
 if __name__ == "__main__":
