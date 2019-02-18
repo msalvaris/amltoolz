@@ -132,6 +132,13 @@ def _get_sub_id():
     return input("Please choose a subscription id ")
 
 
+def _is_sub_id_empty(sub_id):
+    if sub_id is None or sub_id == "":
+        return True
+    else:
+        return False
+
+
 def workspace_for_user(
     workspace_name=WORKSPACE,
     resource_group=RESOURCE_GROUP,
@@ -142,7 +149,7 @@ def workspace_for_user(
     if os.path.isfile(DEFAULT_AML_PATH):
         return load_workspace(DEFAULT_AML_PATH)
     else:
-        if subscription_id is None:
+        if _is_sub_id_empty(subscription_id):
             subscription_id = _get_sub_id()
 
         path_obj = Path(path)
@@ -208,9 +215,7 @@ def _compute_target_df_from(compute_target):
         "nodeIdleTimeBeforeScaleDown",
     )
 
-    return pipe(_extract(ct_dict, iter(nodes_iter)),
-                dict,
-                pd.Series)
+    return pipe(_extract(ct_dict, iter(nodes_iter)), dict, pd.Series)
 
 
 class Workspace(object):
