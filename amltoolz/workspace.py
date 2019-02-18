@@ -68,7 +68,7 @@ def create_workspace(
 
 def _get_auth():
     logger = logging.getLogger(__name__)
-    if os.environ.get("AML_SP_PASSWORD", None) is not None:
+    if os.environ.get("AML_SP_PASSWORD", None):
         logger.debug("Trying to create Workspace with Service Principal")
         aml_sp_password = os.environ.get("AML_SP_PASSWORD")
         aml_sp_tennant_id = os.environ.get("AML_SP_TENNANT_ID")
@@ -132,13 +132,6 @@ def _get_sub_id():
     return input("Please choose a subscription id ")
 
 
-def _is_sub_id_empty(sub_id):
-    if sub_id is None or sub_id == "":
-        return True
-    else:
-        return False
-
-
 def workspace_for_user(
     workspace_name=WORKSPACE,
     resource_group=RESOURCE_GROUP,
@@ -149,7 +142,7 @@ def workspace_for_user(
     if os.path.isfile(DEFAULT_AML_PATH):
         return load_workspace(DEFAULT_AML_PATH)
     else:
-        if _is_sub_id_empty(subscription_id):
+        if not subscription_id:
             subscription_id = _get_sub_id()
 
         path_obj = Path(path)
