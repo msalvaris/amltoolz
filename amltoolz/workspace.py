@@ -1,4 +1,4 @@
-import logging
+import logging.config
 import os
 from pathlib import Path
 
@@ -74,9 +74,9 @@ def _get_auth():
         aml_sp_tennant_id = os.environ.get("AML_SP_TENNANT_ID")
         aml_sp_username = os.environ.get("AML_SP_USERNAME")
         auth = ServicePrincipalAuthentication(
-            tenant_id=aml_sp_tennant_id,
-            username=aml_sp_username,
-            password=aml_sp_password,
+            aml_sp_tennant_id,
+            aml_sp_username,
+            aml_sp_password,
         )
     else:
         logger.debug("Trying to create Workspace with CLI Authentication")
