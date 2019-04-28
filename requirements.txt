@@ -1,5 +1,5 @@
 tabulate
-knack
+knack==0.5.4
 pandas
 toolz
 fire
