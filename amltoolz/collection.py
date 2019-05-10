@@ -4,7 +4,6 @@ class Collection(object):
         self._elements = None
 
     def __dir__(self):
-        print("__dir__")
         if self._elements is not None:
             return self.__dict__
         else:
@@ -36,3 +35,8 @@ class Collection(object):
         if self._elements is None:
             self.refresh()
         return iter(self._elements.values())
+
+    def __contains__(self, key):
+        if self._elements is None:
+            self.refresh()
+        return key in self._elements
